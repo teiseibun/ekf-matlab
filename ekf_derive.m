@@ -31,17 +31,18 @@ syms r1_11 r1_22 r1_33
 R1 = [r1_11 0 0; 0 r1_22 0; 0 0 r1_33];
 
 % h1(x)
-syms h1 g
-h1_11 = 2*g*(q1*q3 - q0*q2);
-h1_21 = 2*g*(q2*q3 + q0*q1);
-h1_31 = g*(q0^2-q1^2-q2^2+q3^2);
+h1_11 = 2*(q1*q3 - q0*q2);
+h1_21 = 2*(q2*q3 + q0*q1);
+h1_31 = (q0^2-q1^2-q2^2+q3^2);
 h1 = [h1_11; h1_21; h1_31];
 
 % H1
-H1 = jacobian(h1, x)
+H1 = jacobian(h1, x);
 
 % K1: kalman gain of accelerometer
-%K1 = P*H1'*(H1*P*H1' + R1)'
+syms p1_11 p1_22 p1_33 p1_44
+P1 = [p1_11 0 0 0; 0 p1_22 0 0; 0 0 p1_33 0; 0 0 0 p1_44];
+K1 = P1*H1'*(H1*P1*H1' + R1)';
 
 % R2: covariance matrix of magnetometer
 syms r2_11 r2_22 r2_33
@@ -56,3 +57,8 @@ h2 = [h2_11; h2_21; h2_31];
 
 % H2
 H2 = jacobian(h2, x);
+
+% K2: kalman gain of magnetometer
+syms p2_11 p2_22 p2_33 p2_44
+P2 = [p2_11 0 0 0; 0 p2_22 0 0; 0 0 p2_33 0; 0 0 0 p2_44];
+K2 = P2*H2'*(H2*P2*H2' + R2)';
